@@ -45,6 +45,10 @@ public class LandingPages {
     @FindBy(xpath = "//a[contains(.,'Log out')]")
    public WebElement logOutBtn;
 
+    //US5
+
+    @FindBy(xpath = "//li[@tabindex='-1']/a")
+    public List <WebElement> dashboardModule;
 
 
 }

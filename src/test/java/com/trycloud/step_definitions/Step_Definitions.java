@@ -38,4 +38,18 @@ public class Step_Definitions {
   landingPages.userBtn.click();
   landingPages.logOutBtn.click();
  }
+
+ //US2_Mikael
+ @When("user enter invalid {string} and {string}")
+ public void user_enter_invalid_and(String string, String string2) {
+  loginPage.login(string, string2);
+
+ }
+
+ @Then("verify {string} message should be displayed")
+ public void verify_message_should_be_displayed(String string) {
+  String actualMessage = loginPage.errorMessage.getText();
+
+  Assert.assertEquals(string, actualMessage);
+ }
 }

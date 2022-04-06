@@ -10,11 +10,15 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Step_Definitions {
  LoginPage loginPage =new LoginPage();
@@ -23,6 +27,8 @@ public class Step_Definitions {
  TalkModulePage talkModulePage =new TalkModulePage();
  ContactsModulePage contactsModulePage =new ContactsModulePage();
  Waiter wait =new Waiter(Driver.getDriver());
+
+ String addToFavorites;
 
  //US1_Layla
  @Given("user on the login page")
@@ -118,6 +124,43 @@ public class Step_Definitions {
             js.executeScript("window.scrollBy(10000, 0);");
             Assert.assertTrue(checkBox.isSelected());
         }*/
+
+    }
+
+    //US5
+    @When("user clicks action-icon from any file on the page and user chooses the \"Add to favorites\" option")
+    public void user_clicks_action_icon_from_any_file_on_the_page(String option) {
+        TrycloudUtililities.sleep(3);
+        for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
+            TrycloudUtililities.sleep(2);
+            addToFavorites = filesModulePage.actualNamesOfFiles.get(0).getText();
+            filesModulePage.actionIcon.get(0).click();
+        }
+    }
+    @When("user chooses the {string} option")
+    public void user_chooses_the_option(String option) {
+
+
+    }
+    @When("user clicks the {string} sub-module on the left side")
+    public void user_clicks_the_sub_module_on_the_left_side(String subModule) {
+
+        Map<String, WebElement> map = new HashMap<>(){{
+            put("Favorites", filesModulePage.favorite);
+            put("Deleted files", filesModulePage.deletedFiles);
+            put("Settings", filesModulePage.settingBtn);
+        }};
+
+        map.get(subModule).click();
+
+    }
+    @Then("user verifies the chosen file is listed on the table")
+    public void user_verifies_the_chosen_file_is_listed_on_the_table() {
+        List<String> favorites = new ArrayList<>();
+        for (WebElement eachFile : filesModulePage.actualNamesOfFiles){
+            favorites.add(eachFile.getText());
+        }
+        Assert.assertTrue(favorites.contains(addToFavorites));
 
     }
 }

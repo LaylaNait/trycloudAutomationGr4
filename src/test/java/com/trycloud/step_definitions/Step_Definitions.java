@@ -136,10 +136,6 @@ public class Step_Definitions {
             addToFavorites = filesModulePage.actualNamesOfFiles.get(0).getText();
             filesModulePage.actionIcon.get(0).click();
         }
-    }
-    @When("user chooses the {string} option")
-    public void user_chooses_the_option(String option) {
-
 
     }
     @When("user clicks the {string} sub-module on the left side")

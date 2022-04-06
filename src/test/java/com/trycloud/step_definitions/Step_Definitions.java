@@ -38,4 +38,25 @@ public class Step_Definitions {
   landingPages.userBtn.click();
   landingPages.logOutBtn.click();
  }
+
+    //US4_Badmaa
+    @Given("user on the dashboard page")
+    public void userOnTheDashboardPage() {
+    }
+
+    @When("user clicks the {string} module")
+    public void userClicksTheModule(String arg0) {
+    }
+
+    @Then("verify title is {string}")
+    public void verifyTitleIs(String arg0) {
+    }
+
+    @And("user click the top-left checkbox of the table")
+    public void userClickTheTopLeftCheckboxOfTheTable() {
+    }
+
+    @Then("verify all the files are selected")
+    public void verifyAllTheFilesAreSelected() {
+    }
 }

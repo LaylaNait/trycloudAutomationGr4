@@ -9,6 +9,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Step_Definitions {
  LoginPage loginPage =new LoginPage();
@@ -39,24 +44,38 @@ public class Step_Definitions {
   landingPages.logOutBtn.click();
  }
 
-    //US4_Badmaa
-    @Given("user on the dashboard page")
-    public void userOnTheDashboardPage() {
-    }
+ //US2_Mikael
+ @When("user enter invalid {string} and {string}")
+ public void user_enter_invalid_and(String string, String string2) {
+  loginPage.login(string, string2);
 
-    @When("user clicks the {string} module")
-    public void userClicksTheModule(String arg0) {
-    }
+ }
 
-    @Then("verify title is {string}")
-    public void verifyTitleIs(String arg0) {
-    }
+ @Then("verify {string} message should be displayed")
+ public void verify_message_should_be_displayed(String string) {
+  String actualMessage = loginPage.errorMessage.getText();
 
-    @And("user click the top-left checkbox of the table")
-    public void userClickTheTopLeftCheckboxOfTheTable() {
-    }
+  Assert.assertEquals(string, actualMessage);
+ }
 
-    @Then("verify all the files are selected")
-    public void verifyAllTheFilesAreSelected() {
-    }
+ //US3_Karina
+ @Then("Verify the user see the following modules:")
+ public void verify_the_user_see_the_following_modules(List<String> expectedModules) {
+  Actions actions = new Actions(Driver.getDriver());
+  actions.moveToElement(landingPages.topMenuWithAllModules.get(0)).perform();
+  List<String> actualModules = new ArrayList<>();
+
+  for (WebElement each : landingPages.topMenuWithAllModules) {
+   actualModules.add(each.getText());
+  }
+  System.out.println("actualModules = " + actualModules);
+  Assert.assertEquals(expectedModules, actualModules);
+
+ }
+
+
+ @And("close browser")
+ public void closeBrowser() {
+  Driver.closeDriver();
+ }
 }

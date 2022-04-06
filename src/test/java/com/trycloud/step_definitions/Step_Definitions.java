@@ -3,6 +3,7 @@ package com.trycloud.step_definitions;
 import com.trycloud.pages.*;
 import com.trycloud.utilities.ConfigurationReader;
 import com.trycloud.utilities.Driver;
+import com.trycloud.utilities.TrycloudUtililities;
 import com.trycloud.utilities.Waiter;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -78,4 +79,45 @@ public class Step_Definitions {
  public void closeBrowser() {
   Driver.closeDriver();
  }
+
+    //US4_Badmaa
+    @Given("user on the dashboard page")
+    public void userOnTheDashboardPage() {
+        Driver.getDriver().get(ConfigurationReader.getProperty("env"));
+        loginPage.loginWithConfigurationProp();
+    }
+
+    @When("user clicks the {string} module")
+    public void userClicksTheModule(String mainModuleName) {
+        TrycloudUtililities.clickItem(Driver.getDriver(), wait, landingPages.topMenuWithAllModules, mainModuleName);
+    }
+
+    @Then("verify title is {string}")
+    public void verifyTitleIs(String title) {
+        Assert.assertTrue(Driver.getDriver().getTitle().contains(title));
+    }
+
+    @And("user click the top-left checkbox of the table")
+    public void userClickTheTopLeftCheckboxOfTheTable() {
+        filesModulePage.topCheckbox.click();
+    }
+
+    @Then("verify all the files are selected")
+    public void verifyAllTheFilesAreSelected() {
+        for (int i = 0; i < filesModulePage.firstTableColumn.size(); i++) {
+
+            TrycloudUtililities.sleep(2);
+            Assert.assertTrue(filesModulePage.firstTableColumn.get(i).isSelected());
+        }
+
+      /*  for (WebElement checkBox : filesModulePage.firstTableColumn) {
+            wait.waitForElement(checkBox, 4);
+            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+
+            js.executeScript("window.scrollBy(10000, 0);");
+            js.executeScript("window.scrollBy(10000, 0);");
+            Assert.assertTrue(checkBox.isSelected());
+        }*/
+
+    }
 }

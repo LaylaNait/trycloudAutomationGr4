@@ -1,4 +1,4 @@
-@test1
+
 Feature: As a user, I should be able to log in.
 
   Scenario Outline: Verify user login fail with invalid credentials

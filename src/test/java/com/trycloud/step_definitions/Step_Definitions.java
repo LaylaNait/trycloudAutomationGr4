@@ -9,6 +9,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Step_Definitions {
  LoginPage loginPage =new LoginPage();
@@ -51,5 +56,26 @@ public class Step_Definitions {
   String actualMessage = loginPage.errorMessage.getText();
 
   Assert.assertEquals(string, actualMessage);
+ }
+
+ //US3_Karina
+ @Then("Verify the user see the following modules:")
+ public void verify_the_user_see_the_following_modules(List<String> expectedModules) {
+  Actions actions = new Actions(Driver.getDriver());
+  actions.moveToElement(landingPages.topMenuWithAllModules.get(0)).perform();
+  List<String> actualModules = new ArrayList<>();
+
+  for (WebElement each : landingPages.topMenuWithAllModules) {
+   actualModules.add(each.getText());
+  }
+  System.out.println("actualModules = " + actualModules);
+  Assert.assertEquals(expectedModules, actualModules);
+
+ }
+
+
+ @And("close browser")
+ public void closeBrowser() {
+  Driver.closeDriver();
  }
 }

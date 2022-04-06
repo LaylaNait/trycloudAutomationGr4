@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 
         dryRun = false,
          //if true = do not run my step_definition, but only check if any step is missing snippet
-        tags = "@test1"
+        tags = "@test3"
 
 
 )

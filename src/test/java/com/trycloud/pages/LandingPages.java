@@ -43,11 +43,8 @@ public class LandingPages {
     @FindBy(xpath = "//div[@id='expand']")
     public WebElement userBtn;
     @FindBy(xpath = "//a[contains(.,'Log out')]")
-    WebElement logOutBtn;
+   public WebElement logOutBtn;
 
 
-    public void logout(){
-        userBtn.click();
-        logOutBtn.click();
-    }
+
 }

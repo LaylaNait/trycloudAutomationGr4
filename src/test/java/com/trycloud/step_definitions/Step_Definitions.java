@@ -11,26 +11,22 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Step_Definitions {
     LoginPage loginPage = new LoginPage();
-    LandingPages landingPages = new LandingPages();
+    LandingPages landingPage = new LandingPages();
     FilesModulePage filesModulePage = new FilesModulePage();
     TalkModulePage talkModulePage = new TalkModulePage();
     ContactsModulePage contactsModulePage = new ContactsModulePage();
     Waiter wait = new Waiter(Driver.getDriver());
-
-    String addToFavorites;
-    String fileToBeDeleted;
 
     //US1_Layla
     @Given("user on the login page")
@@ -51,8 +47,8 @@ public class Step_Definitions {
 
     @And("user logout")
     public void userLogout() {
-        landingPages.userBtn.click();
-        landingPages.logOutBtn.click();
+        landingPage.userBtn.click();
+        landingPage.logOutBtn.click();
     }
 
     //US2_Mikael
@@ -73,10 +69,10 @@ public class Step_Definitions {
     @Then("Verify the user see the following modules:")
     public void verify_the_user_see_the_following_modules(List<String> expectedModules) {
         Actions actions = new Actions(Driver.getDriver());
-        actions.moveToElement(landingPages.topMenuWithAllModules.get(0)).perform();
+        actions.moveToElement(landingPage.topMenuWithAllModules.get(0)).perform();
         List<String> actualModules = new ArrayList<>();
 
-        for (WebElement each : landingPages.topMenuWithAllModules) {
+        for (WebElement each : landingPage.topMenuWithAllModules) {
             actualModules.add(each.getText());
         }
         System.out.println("actualModules = " + actualModules);
@@ -99,7 +95,7 @@ public class Step_Definitions {
 
     @When("user clicks the {string} module")
     public void userClicksTheModule(String mainModuleName) {
-        TrycloudUtililities.clickItem(Driver.getDriver(), wait, landingPages.topMenuWithAllModules, mainModuleName);
+        TrycloudUtililities.clickItem(Driver.getDriver(), wait, landingPage.topMenuWithAllModules, mainModuleName);
     }
 
     @Then("verify title is {string}")
@@ -132,76 +128,68 @@ public class Step_Definitions {
     }
 
     //US5
-    @When("user clicks action-icon from any file on the page and user chooses the \"Add to favorites\" option")
-    public void user_clicks_action_icon_from_any_file_on_the_page(String option) {
-        TrycloudUtililities.sleep(3);
-        for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
-            TrycloudUtililities.sleep(2);
-            addToFavorites = filesModulePage.actualNamesOfFiles.get(0).getText();
-            filesModulePage.actionIcon.get(0).click();
-        }
 
+    List<String> listOfFilesAddedToFavorites = new ArrayList<>();
+    List<String> listOfFilesAlreadyInFavorites = new ArrayList<>();
+    Set<String> setOfFavorites = new HashSet<>();
+
+    @Given("user on the dashboard page with {string} and {string}")
+    public void user_on_the_dashboard_page(String username, String password) {
+        Driver.getDriver().get(ConfigurationReader.getProperty("env"));
+        loginPage.usernameInput.sendKeys(username);
+        loginPage.passwordInput.sendKeys(password);
+        loginPage.loginBtn.click();
     }
-
-    @When("user clicks the {string} sub-module on the left side")
-    public void user_clicks_the_sub_module_on_the_left_side(String subModule) {
-
-        Map<String, WebElement> map = new HashMap<>() {{
-            put("Favorites", filesModulePage.favorite);
-            put("Deleted files", filesModulePage.deletedFiles);
-            put("Settings", filesModulePage.settingBtn);
-        }};
-
-        map.get(subModule).click();
-
-    }
-
-    @Then("user verifies the chosen file is listed on the table")
-    public void user_verifies_the_chosen_file_is_listed_on_the_table() {
-        List<String> favorites = new ArrayList<>();
-        for (WebElement eachFile : filesModulePage.actualNamesOfFiles) {
-            favorites.add(eachFile.getText());
-        }
-        Assert.assertTrue(favorites.contains(addToFavorites));
-
-    }
-    //US8
 
     @When("the user clicks the {string} module")
-    public void theUserClicksTheModule(String moduleName) {
-        TrycloudUtililities.clickItem(Driver.getDriver(), wait, landingPages.topMenuWithAllModules, moduleName);
+    public void the_user_clicks_the_module(String string) {
+        landingPage.dashboardModule.get(1).click();
     }
 
-    @And("user clicks action-icon from any file on the page")
-    public void userClicksActionIconFromAnyFileOnThePage() {
-        for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
-            TrycloudUtililities.sleep(2);
-            fileToBeDeleted = filesModulePage.actualNamesOfFiles.get(0).getText();
-            filesModulePage.actionIcon.get(0).click();
-            break;
+    @When("the user clicks action-icon from any file on the page and user choose the Add to favorites option")
+    public void the_user_clicks_action_icon_from_any_file_on_the_page() throws InterruptedException {
+        for (int i = 0; i < filesModulePage.threeDots.size(); i++) {
+            filesModulePage.threeDots.get(i).click();
+            String addOrRemoveText = filesModulePage.addToFavoritesButtonORemoveFromFavorite.getText();
+            if (addOrRemoveText.equals("Add to favorites")) {
+                filesModulePage.addToFavoritesButtonORemoveFromFavorite.click();
+                WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
+                wait.until(ExpectedConditions.visibilityOf(filesModulePage.threeDots.get(i)));
+                filesModulePage.threeDots.get(i).click();
+                filesModulePage.details.click();
+                wait = new WebDriverWait(Driver.getDriver(), 10);
+                wait.until(ExpectedConditions.visibilityOf(filesModulePage.titleOfFile));
+                String nameOfFile = filesModulePage.titleOfFile.getText();
+                listOfFilesAddedToFavorites.add(nameOfFile);
+            } else {
+                filesModulePage.details.click();
+                WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
+                wait.until(ExpectedConditions.visibilityOf(filesModulePage.titleOfFile));
+                String nameOfFile = filesModulePage.titleOfFile.getText();
+                listOfFilesAlreadyInFavorites.add(nameOfFile);
+            }
         }
+        Thread.sleep(3000);
     }
 
-    @And("user chooses the {string} option")
-    public void userChoosesTheOption(String option) {
-        TrycloudUtililities.sleep(3);
-        filesModulePage.actionIcon.get(0).findElement(By.xpath("//a[contains(.,'" + option + "')]")).click();
+    @And("user click the Favorites sub-module on the left side")
+    public void user_click_the_favorites_sub_module_on_the_left_side() {
+        filesModulePage.favoritesTab.click();
     }
 
-    @Then("verifies the deleted file is displayed on the page")
-    public void verifiesTheDeletedFileIsDisplayedOnThePage() {
-        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
-        js.executeScript("window.scrollBy(20000, 0);");
-        js.executeScript("window.scrollBy(20000, 0);");
+    @When("the user clicks the Files module")
+    public void the_user_clicks_the_files_module() {
+        landingPage.dashboardModule.get(1).click();
+    }
 
+    @Then("Verify the chosen file is listed on the table")
+    public void verify_the_chosen_file_is_listed_on_the_table() {
+        setOfFavorites.addAll(listOfFilesAddedToFavorites);
+        setOfFavorites.addAll(listOfFilesAlreadyInFavorites);
 
-        List<String> filesNameInTrash = new ArrayList<>();
-        for (int i = 0; i < filesModulePage.allTrashBinFiles.size(); i++) {
-            js.executeScript("arguments[0].scrollIntoView(true);", filesModulePage.allTrashBinFiles.get(i));
-            js.executeScript("window.scrollBy(1000, 0);");
-            filesNameInTrash.add(filesModulePage.allTrashBinFiles.get(i).getText());
-
+        for (int i = 0; i < listOfFilesAddedToFavorites.size(); i++) {
+            String currentFile = listOfFilesAlreadyInFavorites.get(i);
+            Assert.assertTrue(setOfFavorites.contains(currentFile));
         }
-        Assert.assertTrue(filesNameInTrash.contains(fileToBeDeleted));
     }
 }

@@ -90,4 +90,22 @@ public class FilesModulePage {
    public WebElement settingOptions;
     @FindBy(xpath = "//a[@class='icon-quota svg']/p")
    public WebElement usedStorageParagraph;
+
+
+    //5
+    @FindBy(xpath = "//span[@class='fileactions']/a[@href='#' and @data-action='menu']")
+    public List<WebElement> threeDots;
+
+    @FindBy(xpath = "//a[@href='#']//span[@class='icon icon-more']")
+    public WebElement addToFavoritesButtonORemoveFromFavorite;
+
+    @FindBy(xpath = "//span[.='Details']")
+    public WebElement details;
+
+    @FindBy(xpath = "//h2[@class='app-sidebar-header__maintitle']")
+    public WebElement titleOfFile;
+
+    @FindBy(xpath = "//a[.='Favorites']")
+    public WebElement favoritesTab;
+
 }

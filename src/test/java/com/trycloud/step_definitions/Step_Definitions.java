@@ -11,6 +11,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
@@ -21,70 +22,73 @@ import java.util.List;
 import java.util.Map;
 
 public class Step_Definitions {
- LoginPage loginPage =new LoginPage();
- LandingPages landingPages=new LandingPages();
- FilesModulePage filesModulePage =new FilesModulePage();
- TalkModulePage talkModulePage =new TalkModulePage();
- ContactsModulePage contactsModulePage =new ContactsModulePage();
- Waiter wait =new Waiter(Driver.getDriver());
+    LoginPage loginPage = new LoginPage();
+    LandingPages landingPages = new LandingPages();
+    FilesModulePage filesModulePage = new FilesModulePage();
+    TalkModulePage talkModulePage = new TalkModulePage();
+    ContactsModulePage contactsModulePage = new ContactsModulePage();
+    Waiter wait = new Waiter(Driver.getDriver());
 
- String addToFavorites;
+    String addToFavorites;
+    String fileToBeDeleted;
 
- //US1_Layla
- @Given("user on the login page")
- public void user_on_the_login_page() {
-  Driver.getDriver().get(ConfigurationReader.getProperty("env"));
- }
- @When("user use username {string} and passcode {string} and user click on the login button")
- public void user_use_username_and_passcode_and_user_click_on_the_login_button(String username, String password) {
-  loginPage.login(username, password);
- }
- @Then("verify the user should be at the {string} page")
- public void verify_the_user_should_be_at_the_page(String title) {
-  Assert.assertTrue(Driver.getDriver().getTitle().contains(title));
- }
+    //US1_Layla
+    @Given("user on the login page")
+    public void user_on_the_login_page() {
+        Driver.getDriver().get(ConfigurationReader.getProperty("env"));
+    }
 
+    @When("user use username {string} and passcode {string} and user click on the login button")
+    public void user_use_username_and_passcode_and_user_click_on_the_login_button(String username, String password) {
+        loginPage.login(username, password);
+    }
 
- @And("user logout")
- public void userLogout() {
-  landingPages.userBtn.click();
-  landingPages.logOutBtn.click();
- }
-
- //US2_Mikael
- @When("user enter invalid {string} and {string}")
- public void user_enter_invalid_and(String string, String string2) {
-  loginPage.login(string, string2);
-
- }
-
- @Then("verify {string} message should be displayed")
- public void verify_message_should_be_displayed(String string) {
-  String actualMessage = loginPage.errorMessage.getText();
-
-  Assert.assertEquals(string, actualMessage);
- }
-
- //US3_Karina
- @Then("Verify the user see the following modules:")
- public void verify_the_user_see_the_following_modules(List<String> expectedModules) {
-  Actions actions = new Actions(Driver.getDriver());
-  actions.moveToElement(landingPages.topMenuWithAllModules.get(0)).perform();
-  List<String> actualModules = new ArrayList<>();
-
-  for (WebElement each : landingPages.topMenuWithAllModules) {
-   actualModules.add(each.getText());
-  }
-  System.out.println("actualModules = " + actualModules);
-  Assert.assertEquals(expectedModules, actualModules);
-
- }
+    @Then("verify the user should be at the {string} page")
+    public void verify_the_user_should_be_at_the_page(String title) {
+        Assert.assertTrue(Driver.getDriver().getTitle().contains(title));
+    }
 
 
- @And("close browser")
- public void closeBrowser() {
-  Driver.closeDriver();
- }
+    @And("user logout")
+    public void userLogout() {
+        landingPages.userBtn.click();
+        landingPages.logOutBtn.click();
+    }
+
+    //US2_Mikael
+    @When("user enter invalid {string} and {string}")
+    public void user_enter_invalid_and(String string, String string2) {
+        loginPage.login(string, string2);
+
+    }
+
+    @Then("verify {string} message should be displayed")
+    public void verify_message_should_be_displayed(String string) {
+        String actualMessage = loginPage.errorMessage.getText();
+
+        Assert.assertEquals(string, actualMessage);
+    }
+
+    //US3_Karina
+    @Then("Verify the user see the following modules:")
+    public void verify_the_user_see_the_following_modules(List<String> expectedModules) {
+        Actions actions = new Actions(Driver.getDriver());
+        actions.moveToElement(landingPages.topMenuWithAllModules.get(0)).perform();
+        List<String> actualModules = new ArrayList<>();
+
+        for (WebElement each : landingPages.topMenuWithAllModules) {
+            actualModules.add(each.getText());
+        }
+        System.out.println("actualModules = " + actualModules);
+        Assert.assertEquals(expectedModules, actualModules);
+
+    }
+
+
+    @And("close browser")
+    public void closeBrowser() {
+        Driver.closeDriver();
+    }
 
     //US4_Badmaa
     @Given("user on the dashboard page")
@@ -138,10 +142,11 @@ public class Step_Definitions {
         }
 
     }
+
     @When("user clicks the {string} sub-module on the left side")
     public void user_clicks_the_sub_module_on_the_left_side(String subModule) {
 
-        Map<String, WebElement> map = new HashMap<>(){{
+        Map<String, WebElement> map = new HashMap<>() {{
             put("Favorites", filesModulePage.favorite);
             put("Deleted files", filesModulePage.deletedFiles);
             put("Settings", filesModulePage.settingBtn);
@@ -150,13 +155,53 @@ public class Step_Definitions {
         map.get(subModule).click();
 
     }
+
     @Then("user verifies the chosen file is listed on the table")
     public void user_verifies_the_chosen_file_is_listed_on_the_table() {
         List<String> favorites = new ArrayList<>();
-        for (WebElement eachFile : filesModulePage.actualNamesOfFiles){
+        for (WebElement eachFile : filesModulePage.actualNamesOfFiles) {
             favorites.add(eachFile.getText());
         }
         Assert.assertTrue(favorites.contains(addToFavorites));
 
+    }
+    //US8
+
+    @When("the user clicks the {string} module")
+    public void theUserClicksTheModule(String moduleName) {
+         TrycloudUtililities.clickItem(Driver.getDriver(), wait, landingPages.topMenuWithAllModules, moduleName);
+    }
+
+    @And("user clicks action-icon from any file on the page")
+    public void userClicksActionIconFromAnyFileOnThePage() {
+        for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
+            TrycloudUtililities.sleep(2);
+            fileToBeDeleted = filesModulePage.actualNamesOfFiles.get(0).getText();
+            filesModulePage.actionIcon.get(0).click();
+            break;
+        }
+    }
+
+    @And("user chooses the {string} option")
+    public void userChoosesTheOption(String option) {
+        TrycloudUtililities.sleep(3);
+        filesModulePage.actionIcon.get(0).findElement(By.xpath("//a[contains(.,'" + option + "')]")).click();
+    }
+
+    @Then("verifies the deleted file is displayed on the page")
+    public void verifiesTheDeletedFileIsDisplayedOnThePage() {
+        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+        js.executeScript("window.scrollBy(20000, 0);");
+        js.executeScript("window.scrollBy(20000, 0);");
+
+
+        List<String> filesNameInTrash = new ArrayList<>();
+        for (int i = 0; i < filesModulePage.allTrashBinFiles.size(); i++) {
+            js.executeScript("arguments[0].scrollIntoView(true);", filesModulePage.allTrashBinFiles.get(i));
+            js.executeScript("window.scrollBy(1000, 0);");
+            filesNameInTrash.add(filesModulePage.allTrashBinFiles.get(i).getText());
+
+        }
+        Assert.assertTrue(filesNameInTrash.contains(fileToBeDeleted));
     }
 }

@@ -143,7 +143,7 @@ public class Step_Definitions {
 
     }
 
-   /* @When("user clicks the {string} sub-module on the left side")
+    @When("user clicks the {string} sub-module on the left side")
     public void user_clicks_the_sub_module_on_the_left_side(String subModule) {
 
         Map<String, WebElement> map = new HashMap<>() {{
@@ -154,7 +154,7 @@ public class Step_Definitions {
 
         map.get(subModule).click();
 
-    }*/
+    }
 
     @Then("user verifies the chosen file is listed on the table")
     public void user_verifies_the_chosen_file_is_listed_on_the_table() {
@@ -186,12 +186,6 @@ public class Step_Definitions {
     public void userChoosesTheOption(String option) {
         TrycloudUtililities.sleep(3);
         filesModulePage.actionIcon.get(0).findElement(By.xpath("//a[contains(.,'" + option + "')]")).click();
-    }
-
-    @When("user clicks the {string} sub-module on the left side")
-    public void userClicksTheSubModuleOnTheLeftSide(String subModule) throws InterruptedException {
-        filesModulePage.filesLeftSideSubmodulesList.findElement(By.xpath("//a[contains(.,'" + subModule + "')]")).click();
-        Thread.sleep(3);
     }
 
     @Then("verifies the deleted file is displayed on the page")

@@ -11,6 +11,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -27,6 +28,7 @@ public class Step_Definitions {
     TalkModulePage talkModulePage = new TalkModulePage();
     ContactsModulePage contactsModulePage = new ContactsModulePage();
     Waiter wait = new Waiter(Driver.getDriver());
+    String fileToBeDeleted;
 
     //US1_Layla
     @Given("user on the login page")
@@ -191,5 +193,44 @@ public class Step_Definitions {
             String currentFile = listOfFilesAlreadyInFavorites.get(i);
             Assert.assertTrue(setOfFavorites.contains(currentFile));
         }
+    }
+    //US8
+    @And("user clicks action-icon from any file on the page")
+    public void userClicksActionIconFromAnyFileOnThePage() {
+        for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
+           TrycloudUtililities.sleep(2);
+            fileToBeDeleted = filesModulePage.actualNamesOfFiles.get(0).getText();
+            filesModulePage.actionIcon.get(0).click();
+            break;
+        }
+    }
+
+    @And("user chooses the {string} option")
+    public void userChoosesTheOption(String option) {
+        TrycloudUtililities.sleep(3);
+        filesModulePage.actionIcon.get(0).findElement(By.xpath("//a[contains(.,'" + option + "')]")).click();
+    }
+
+    @When("user clicks the {string} sub-module on the left side")
+    public void userClicksTheSubModuleOnTheLeftSide(String subModule) throws InterruptedException {
+        filesModulePage.filesLeftSideSubmodulesList.findElement(By.xpath("//a[contains(.,'" + subModule + "')]")).click();
+        Thread.sleep(3);
+    }
+
+    @Then("verifies the deleted file is displayed on the page")
+    public void verifiesTheDeletedFileIsDisplayedOnThePage() {
+        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+        js.executeScript("window.scrollBy(20000, 0);");
+        js.executeScript("window.scrollBy(20000, 0);");
+
+
+        List<String> filesNameInTrash = new ArrayList<>();
+        for (int i = 0; i < filesModulePage.allTrashBinFiles.size(); i++) {
+            js.executeScript("arguments[0].scrollIntoView(true);", filesModulePage.allTrashBinFiles.get(i));
+            js.executeScript("window.scrollBy(1000, 0);");
+            filesNameInTrash.add(filesModulePage.allTrashBinFiles.get(i).getText());
+
+        }
+        Assert.assertTrue(filesNameInTrash.contains(fileToBeDeleted));
     }
 }

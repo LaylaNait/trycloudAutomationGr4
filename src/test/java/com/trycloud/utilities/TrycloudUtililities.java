@@ -133,6 +133,12 @@ public class TrycloudUtililities {
             }
         }
     }
+
+    public static void clickItem(WebElement ancestor, String descTag, String name){
+
+        ancestor.findElement(By.xpath("//" + descTag + "[contains(., '" + name + "')]")).click();
+    }
+
     public static void uploadFile(String filePath, WebElement uploadLink, WebElement progressBar) {
         WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 30);
         sleep(5);

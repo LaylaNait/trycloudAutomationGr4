@@ -4,4 +4,4 @@ Feature: As a user, I should be able to view the contact list.
 Scenario: verify users can see all the contact names on the contact list
 Given user on the dashboard page
 When user clicks the "Contacts" module
-Then user verifies there are at least "2" contact names in the list
+Then user verifies there are at least 2 contact names in the list

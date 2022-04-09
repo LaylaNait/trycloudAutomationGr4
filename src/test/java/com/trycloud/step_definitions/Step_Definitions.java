@@ -235,9 +235,8 @@ public class Step_Definitions {
     }
 
     //US13 Nazar
-    @Then("user verifies there are at least {string} contact names in the list")
-    public void userVerifiesThereAreAtLeastContactNamesInTheList(String expectedContactsAmount) {
-        int expectedSize = Integer.parseInt(expectedContactsAmount);
+    @Then("user verifies there are at least {int} contact names in the list")
+    public void userVerifiesThereAreAtLeastContactNamesInTheList(int expectedSize) {
         int actualSize = Driver.getDriver().findElements(By.xpath("//div[@id='contacts-list']/div/div")).size();
         System.out.println("actualSize = " + actualSize);
         Assert.assertTrue(actualSize>=expectedSize);

@@ -1,5 +1,6 @@
 Feature:As a user, I should be able to update settings.
 
+
 Scenario Outline: Verify users update settings
   Given user on the dashboard page with "<username>" and "<password>"
   When  user clicks the "Files" module
@@ -25,3 +26,4 @@ Then  user should be able to see storage usage is increased
     | user34   | Userpass123 |
     | user64   | Userpass123 |
     | user94   | Userpass123 |
+

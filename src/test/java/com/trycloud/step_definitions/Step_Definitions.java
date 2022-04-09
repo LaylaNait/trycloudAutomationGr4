@@ -233,4 +233,13 @@ public class Step_Definitions {
         }
         Assert.assertTrue(filesNameInTrash.contains(fileToBeDeleted));
     }
+
+    //US13 Nazar
+    @Then("user verifies there are at least {string} contact names in the list")
+    public void userVerifiesThereAreAtLeastContactNamesInTheList(String expectedContactsAmount) {
+        int expectedSize = Integer.parseInt(expectedContactsAmount);
+        int actualSize = Driver.getDriver().findElements(By.xpath("//div[@id='contacts-list']/div/div")).size();
+        System.out.println("actualSize = " + actualSize);
+        Assert.assertTrue(actualSize>=expectedSize);
+    }
 }

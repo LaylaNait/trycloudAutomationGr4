@@ -21,6 +21,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.IOException;
 import java.util.*;
 
+import static com.trycloud.utilities.TrycloudUtililities.isItemDisplayed;
+
 public class Step_Definitions {
     LoginPage loginPage = new LoginPage();
     LandingPages landingPage = new LandingPages();
@@ -239,5 +241,37 @@ public class Step_Definitions {
         }
         Assert.assertTrue(filesNameInTrash.contains(fileToBeDeleted));
     }
-}
+//US9
+
+    @And("user clicks the comments option")
+    public void userClicksTheCommentsOption() {
+        filesModulePage.commentsBtn.click();
+    }
+    @And("user writes a {string} inside the input box")
+    public void userWritesAInsideTheInputBox(String comment) {
+        filesModulePage.commentsInput.sendKeys(comment);
+    }
+
+    @And("user clicks the submit button to post it")
+    public void userClicksTheSubmitButtonToPostIt() {
+        filesModulePage.commentSubmitBtn.click();
+    }
+
+    @Then("verifies the {string} is displayed in the comment section")
+    public void verifiesTheIsDisplayedInTheCommentSection(String comment) {
+        TrycloudUtililities.sleep(3);
+
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 3);
+        wait.until(ExpectedConditions.visibilityOf(landingPage.allComment.get(0)));
+        List<String> listOfComment = new ArrayList<>();
+        for (WebElement comments : landingPage.allComment) {
+            listOfComment.add(comments.getText());
+        }
+        System.out.println("listOfComment = " + listOfComment);
+        Assert.assertTrue(isItemDisplayed(Driver.getDriver(), landingPage.allComment,comment));
+    }
+    }
+
+
+
 

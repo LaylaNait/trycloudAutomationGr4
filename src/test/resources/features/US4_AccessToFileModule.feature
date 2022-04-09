@@ -2,7 +2,7 @@ Feature: As a user, I should be able to access to Files module.
   Scenario Outline: verify users can access to Files module
     Given user on the dashboard page with "<username>" and "<password>"
     When  user clicks the "Files" module
-    Then verify title is "Files - Trycloud"
+    Then verify title is "Files - Trycloud QA"
     Examples:
       | username | password |
       | user4    | Userpass123 |

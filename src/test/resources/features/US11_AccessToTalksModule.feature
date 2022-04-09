@@ -3,7 +3,8 @@ Feature: As a user, I should be able to access to Talks module
   Scenario Outline: verify users to access to Talks module
     Given user on the dashboard page with "<username>" and "<password>"
     When the user clicks the "Talk" module
-    Then verify the page title is "Talk - Trycloud"
+    Then verify title is "Talk - Trycloud QA"
+
     Examples:
       | username | password |
       | user4    | Userpass123 |

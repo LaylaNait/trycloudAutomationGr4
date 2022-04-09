@@ -1,6 +1,7 @@
 package com.trycloud.pages;
 
 import com.trycloud.utilities.Driver;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -20,6 +21,11 @@ public class FilesModulePage {
 
     @FindBy(xpath = "//td[@class='selection']")
    public List<WebElement> firstTableColumn;
+
+    @FindBy(xpath = "//div[@id='app-content-files']")
+    public WebElement filesContentSection;
+
+    public By pageFooter = By.xpath("//tfoot");
     //5
     @FindBy(xpath = "//div[@id='app-content-files']//div[contains(@class, 'fileActionsMenu')]")
     public WebElement filesActionsMenu;
@@ -92,6 +98,8 @@ public class FilesModulePage {
    public List<WebElement> settingOptions;
     @FindBy(xpath = "//a[@class='icon-quota svg']/p")
    public WebElement usedStorageParagraph;
+    @FindBy(xpath = "//div[@id='uploadprogressbar']")
+    public WebElement uploadProgressBar;
 
 
     //5

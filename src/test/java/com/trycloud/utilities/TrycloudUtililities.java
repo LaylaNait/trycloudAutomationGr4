@@ -134,6 +134,11 @@ public class TrycloudUtililities {
         }
     }
 
+    public static WebElement getDescendent(WebElement ancestor, By by){
+
+        return ancestor.findElement(by);
+    }
+
     public static void clickItem(WebElement ancestor, String descTag, String name){
 
         ancestor.findElement(By.xpath("//" + descTag + "[contains(., '" + name + "')]")).click();

@@ -12,6 +12,7 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -19,8 +20,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.*;
 
-import static com.trycloud.utilities.TrycloudUtililities.clickItem;
-import static com.trycloud.utilities.TrycloudUtililities.clickModule;
+import static com.trycloud.utilities.TrycloudUtililities.*;
 
 public class Step_Definitions {
     LoginPage loginPage = new LoginPage();
@@ -266,12 +266,28 @@ public class Step_Definitions {
     @When("user uploads file with the {string} option")
     public void user_uploads_file_with_the_option(String option) {
 
-        String path = "Files/TestUpload001.png";
+        TrycloudUtililities.sleep(2);
+
+        try {
+            wait.fluentWaitForElement(getDescendent(filesModulePage.filesContentSection, filesModulePage.pageFooter));
+        } catch (TimeoutException e){
+            wait.fluentWaitForElement(filesModulePage.filesContentSection);
+        }
 
         filesModulePage.addIcon.click();
+
         clickItem(filesModulePage.addIconMenu, "span", option);
-        Driver.getDriver().findElement(By.xpath("//input[@type='file']")).sendKeys(path);
+
+        String path = "/Users/zaieraouani/Desktop/TestUpload001.png";
+
         TrycloudUtililities.sleep(2);
+        Driver.getDriver().findElement(By.xpath("//input[@id='file_upload_start']")).sendKeys(path);
+
+        //input[@type='file']
+
+        TrycloudUtililities.sleep(2);
+        wait.waitForInvisibility(filesModulePage.uploadProgressBar, 10);
+        //TrycloudUtililities.sleep(2);
     }
 
     @When("user refreshes the page")

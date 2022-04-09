@@ -130,8 +130,9 @@ public class Step_Definitions {
     //US5
 
     List<String> listOfFilesAddedToFavorites = new ArrayList<>();
-    List<String> listOfFilesAlreadyInFavorites = new ArrayList<>();
-    Set<String> setOfFavorites = new HashSet<>();
+    List<String> listOfFilesUnderFavoritesTab = new ArrayList<>();
+    List<String> listOfRemovedFiles = new ArrayList<>();
+    int sizeOfListOfFiles = 0;
 
     @Given("user on the dashboard page with {string} and {string}")
     public void user_on_the_dashboard_page(String username, String password) {
@@ -147,29 +148,29 @@ public class Step_Definitions {
     }
 
     @When("the user clicks action-icon from any file on the page and user choose the Add to favorites option")
-    public void the_user_clicks_action_icon_from_any_file_on_the_page() throws InterruptedException {
-        for (int i = 0; i < filesModulePage.threeDots.size(); i++) {
+    public void the_user_clicks_action_icon_from_any_file_on_the_page()  {
+        //loop through all action icons that are visible and displayed
+        sizeOfListOfFiles = filesModulePage.threeDots.size();
+        for ( int i=0; i<filesModulePage.threeDots.size(); i++) {
             filesModulePage.threeDots.get(i).click();
-            String addOrRemoveText = filesModulePage.addToFavoritesButtonORemoveFromFavorite.getText();
+            String addOrRemoveText = filesModulePage.removeOrAdd.getText();
+            System.out.println("Add or Remove: " + addOrRemoveText);
             if (addOrRemoveText.equals("Add to favorites")) {
-                filesModulePage.addToFavoritesButtonORemoveFromFavorite.click();
-                WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
-                wait.until(ExpectedConditions.visibilityOf(filesModulePage.threeDots.get(i)));
-                filesModulePage.threeDots.get(i).click();
-                filesModulePage.details.click();
-                wait = new WebDriverWait(Driver.getDriver(), 10);
-                wait.until(ExpectedConditions.visibilityOf(filesModulePage.titleOfFile));
-                String nameOfFile = filesModulePage.titleOfFile.getText();
-                listOfFilesAddedToFavorites.add(nameOfFile);
+                //add to favorites
+                filesModulePage.removeOrAdd.click();
+                String file = filesModulePage.nameOfFile.get(i).getText();
+                System.out.println(file);
+                listOfFilesAddedToFavorites.add(file);
             } else {
-                filesModulePage.details.click();
-                WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
-                wait.until(ExpectedConditions.visibilityOf(filesModulePage.titleOfFile));
-                String nameOfFile = filesModulePage.titleOfFile.getText();
-                listOfFilesAlreadyInFavorites.add(nameOfFile);
+                //remove from favorites
+                filesModulePage.removeOrAdd.click();
+                Driver.getDriver().navigate().refresh();
+                String file = filesModulePage.nameOfFile.get(i).getText();
+                System.out.println(file);
+                listOfRemovedFiles.add(file);
+
             }
         }
-        Thread.sleep(3000);
     }
 
     @And("user click the Favorites sub-module on the left side")
@@ -181,15 +182,23 @@ public class Step_Definitions {
     public void the_user_clicks_the_files_module() {
         landingPage.dashboardModule.get(1).click();
     }
-
     @Then("Verify the chosen file is listed on the table")
-    public void verify_the_chosen_file_is_listed_on_the_table() {
-        setOfFavorites.addAll(listOfFilesAddedToFavorites);
-        setOfFavorites.addAll(listOfFilesAlreadyInFavorites);
+    public void verify_the_chosen_file_is_listed_on_the_table() throws InterruptedException {
 
-        for (int i = 0; i < listOfFilesAddedToFavorites.size(); i++) {
-            String currentFile = listOfFilesAlreadyInFavorites.get(i);
-            Assert.assertTrue(setOfFavorites.contains(currentFile));
+        for ( int i= 0; i<filesModulePage.threeDots.size(); i++) {
+            Thread.sleep(1000);
+            if ( filesModulePage.threeDotsUnderFavorite.get(i).isDisplayed()) {
+                WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
+                wait.until(ExpectedConditions.elementToBeClickable(filesModulePage.nameOfFile.get(i)));
+                String file = filesModulePage.nameOfFile.get(i).getText();
+                System.out.println("file name under favorite: " + file);
+                Thread.sleep(1000);
+                listOfFilesUnderFavoritesTab.add(file);
+            }
         }
+        System.out.println(listOfFilesUnderFavoritesTab);
+        System.out.println(listOfFilesAddedToFavorites);
+
+        Assert.assertTrue(listOfFilesUnderFavoritesTab.containsAll(listOfFilesAddedToFavorites));
     }
 }

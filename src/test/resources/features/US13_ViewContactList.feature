@@ -11,3 +11,4 @@ Feature: As a user, I should be able to view the contact list.
       | user34   | Userpass123 |
       | user64   | Userpass123 |
       | user94   | Userpass123 |
+

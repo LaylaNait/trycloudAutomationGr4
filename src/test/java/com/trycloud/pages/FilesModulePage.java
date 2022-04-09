@@ -1,6 +1,7 @@
 package com.trycloud.pages;
 
 import com.trycloud.utilities.Driver;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -20,6 +21,11 @@ public class FilesModulePage {
 
     @FindBy(xpath = "//td[@class='selection']")
    public List<WebElement> firstTableColumn;
+
+    @FindBy(xpath = "//div[@id='app-content-files']")
+    public WebElement filesContentSection;
+
+    public By pageFooter = By.xpath("//tfoot");
     //5
     @FindBy(xpath = "//div[@id='app-content-files']//div[contains(@class, 'fileActionsMenu')]")
     public WebElement filesActionsMenu;
@@ -42,6 +48,8 @@ public class FilesModulePage {
     //6 /7 /8 /9
     @FindBy(xpath = "//span[@class='icon icon-add']")
     public WebElement addIcon;
+    @FindBy(xpath = "//div[@class='newFileMenu popovermenu bubble menu open menu-left']")
+    public WebElement addIconMenu;
 
     @FindBy(xpath = "//span[.='New folder']")
     public WebElement newFolder;
@@ -87,23 +95,25 @@ public class FilesModulePage {
     //10
    public WebElement settingBtn;
     @FindBy(xpath = "//div[@id='app-settings-content']//input[@type='checkbox']")
-   public WebElement settingOptions;
+   public List<WebElement> settingOptions;
     @FindBy(xpath = "//a[@class='icon-quota svg']/p")
    public WebElement usedStorageParagraph;
+    @FindBy(xpath = "//div[@id='uploadprogressbar']")
+    public WebElement uploadProgressBar;
 
 
     //5
     @FindBy(xpath = "//span[@class='fileactions']/a[@href='#' and @data-action='menu']")
     public List<WebElement> threeDots;
 
-    @FindBy(xpath = "//a[@href='#']//span[@class='icon icon-more']")
-    public WebElement addToFavoritesButtonORemoveFromFavorite;
+    @FindBy(xpath = "//span[contains(text(), 'favorites')]")
+    public WebElement removeOrAdd;
 
-    @FindBy(xpath = "//span[.='Details']")
-    public WebElement details;
+    @FindBy(xpath = "//a[@class='action action-menu permanent' and @data-action='menu']")
+    public List <WebElement> threeDotsUnderFavorite;
 
-    @FindBy(xpath = "//h2[@class='app-sidebar-header__maintitle']")
-    public WebElement titleOfFile;
+    @FindBy(xpath = "//span[@class='innernametext']")
+    public List <WebElement> nameOfFile;
 
     @FindBy(xpath = "//a[.='Favorites']")
     public WebElement favoritesTab;

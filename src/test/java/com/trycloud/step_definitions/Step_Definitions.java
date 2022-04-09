@@ -12,14 +12,16 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.IOException;
 import java.util.*;
+
+import static com.trycloud.utilities.TrycloudUtililities.*;
+
 
 public class Step_Definitions {
     LoginPage loginPage = new LoginPage();
@@ -89,15 +91,10 @@ public class Step_Definitions {
     }
 
     //US4_Badmaa
-    @Given("user on the dashboard page")
-    public void userOnTheDashboardPage() {
-        Driver.getDriver().get(ConfigurationReader.getProperty("env"));
-        loginPage.loginWithConfigurationProp();
-    }
 
     @When("user clicks the {string} module")
     public void userClicksTheModule(String mainModuleName) {
-        TrycloudUtililities.clickItem(Driver.getDriver(), wait, landingPage.topMenuWithAllModules, mainModuleName);
+        clickItem(Driver.getDriver(), wait, landingPage.topMenuWithAllModules, mainModuleName);
     }
 
     @Then("verify title is {string}")
@@ -117,23 +114,24 @@ public class Step_Definitions {
             TrycloudUtililities.sleep(2);
             Assert.assertTrue(filesModulePage.firstTableColumn.get(i).isSelected());
         }
-
-      /*  for (WebElement checkBox : filesModulePage.firstTableColumn) {
+    }
+       /* for (WebElement checkBox : filesModulePage.firstTableColumn) {
             wait.waitForElement(checkBox, 4);
             JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
 
             js.executeScript("window.scrollBy(10000, 0);");
             js.executeScript("window.scrollBy(10000, 0);");
             Assert.assertTrue(checkBox.isSelected());
-        }*/
+        }
 
-    }
+    }*/
 
     //US5
 
     List<String> listOfFilesAddedToFavorites = new ArrayList<>();
-    List<String> listOfFilesAlreadyInFavorites = new ArrayList<>();
-    Set<String> setOfFavorites = new HashSet<>();
+    List<String> listOfFilesUnderFavoritesTab = new ArrayList<>();
+    List<String> listOfRemovedFiles = new ArrayList<>();
+    int sizeOfListOfFiles = 0;
 
     @Given("user on the dashboard page with {string} and {string}")
     public void user_on_the_dashboard_page(String username, String password) {
@@ -149,29 +147,29 @@ public class Step_Definitions {
     }
 
     @When("the user clicks action-icon from any file on the page and user choose the Add to favorites option")
-    public void the_user_clicks_action_icon_from_any_file_on_the_page() throws InterruptedException {
+    public void the_user_clicks_action_icon_from_any_file_on_the_page() {
+        //loop through all action icons that are visible and displayed
+        sizeOfListOfFiles = filesModulePage.threeDots.size();
         for (int i = 0; i < filesModulePage.threeDots.size(); i++) {
             filesModulePage.threeDots.get(i).click();
-            String addOrRemoveText = filesModulePage.addToFavoritesButtonORemoveFromFavorite.getText();
+            String addOrRemoveText = filesModulePage.removeOrAdd.getText();
+            System.out.println("Add or Remove: " + addOrRemoveText);
             if (addOrRemoveText.equals("Add to favorites")) {
-                filesModulePage.addToFavoritesButtonORemoveFromFavorite.click();
-                WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
-                wait.until(ExpectedConditions.visibilityOf(filesModulePage.threeDots.get(i)));
-                filesModulePage.threeDots.get(i).click();
-                filesModulePage.details.click();
-                wait = new WebDriverWait(Driver.getDriver(), 10);
-                wait.until(ExpectedConditions.visibilityOf(filesModulePage.titleOfFile));
-                String nameOfFile = filesModulePage.titleOfFile.getText();
-                listOfFilesAddedToFavorites.add(nameOfFile);
+                //add to favorites
+                filesModulePage.removeOrAdd.click();
+                String file = filesModulePage.nameOfFile.get(i).getText();
+                System.out.println(file);
+                listOfFilesAddedToFavorites.add(file);
             } else {
-                filesModulePage.details.click();
-                WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
-                wait.until(ExpectedConditions.visibilityOf(filesModulePage.titleOfFile));
-                String nameOfFile = filesModulePage.titleOfFile.getText();
-                listOfFilesAlreadyInFavorites.add(nameOfFile);
+                //remove from favorites
+                filesModulePage.removeOrAdd.click();
+                Driver.getDriver().navigate().refresh();
+                String file = filesModulePage.nameOfFile.get(i).getText();
+                System.out.println(file);
+                listOfRemovedFiles.add(file);
+
             }
         }
-        Thread.sleep(3000);
     }
 
     @And("user click the Favorites sub-module on the left side")
@@ -185,20 +183,30 @@ public class Step_Definitions {
     }
 
     @Then("Verify the chosen file is listed on the table")
-    public void verify_the_chosen_file_is_listed_on_the_table() {
-        setOfFavorites.addAll(listOfFilesAddedToFavorites);
-        setOfFavorites.addAll(listOfFilesAlreadyInFavorites);
+    public void verify_the_chosen_file_is_listed_on_the_table() throws InterruptedException {
 
-        for (int i = 0; i < listOfFilesAddedToFavorites.size(); i++) {
-            String currentFile = listOfFilesAlreadyInFavorites.get(i);
-            Assert.assertTrue(setOfFavorites.contains(currentFile));
+        for (int i = 0; i < filesModulePage.threeDots.size(); i++) {
+            Thread.sleep(1000);
+            if (filesModulePage.threeDotsUnderFavorite.get(i).isDisplayed()) {
+                WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
+                wait.until(ExpectedConditions.elementToBeClickable(filesModulePage.nameOfFile.get(i)));
+                String file = filesModulePage.nameOfFile.get(i).getText();
+                System.out.println("file name under favorite: " + file);
+                Thread.sleep(1000);
+                listOfFilesUnderFavoritesTab.add(file);
+            }
         }
+        System.out.println(listOfFilesUnderFavoritesTab);
+        System.out.println(listOfFilesAddedToFavorites);
+
+        Assert.assertTrue(listOfFilesUnderFavoritesTab.containsAll(listOfFilesAddedToFavorites));
     }
+
     //US8
     @And("user clicks action-icon from any file on the page")
     public void userClicksActionIconFromAnyFileOnThePage() {
         for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
-           TrycloudUtililities.sleep(2);
+            TrycloudUtililities.sleep(2);
             fileToBeDeleted = filesModulePage.actualNamesOfFiles.get(0).getText();
             filesModulePage.actionIcon.get(0).click();
             break;
@@ -234,7 +242,118 @@ public class Step_Definitions {
         Assert.assertTrue(filesNameInTrash.contains(fileToBeDeleted));
     }
 
-    //US13 Nazar
+
+
+  
+//US9
+
+    @And("user clicks the comments option")
+    public void userClicksTheCommentsOption() {
+        filesModulePage.commentsBtn.click();
+    }
+    @And("user writes a {string} inside the input box")
+    public void userWritesAInsideTheInputBox(String comment) {
+        filesModulePage.commentsInput.sendKeys(comment);
+    }
+
+    @And("user clicks the submit button to post it")
+    public void userClicksTheSubmitButtonToPostIt() {
+        filesModulePage.commentSubmitBtn.click();
+    }
+
+    @Then("verifies the {string} is displayed in the comment section")
+    public void verifiesTheIsDisplayedInTheCommentSection(String comment) {
+        TrycloudUtililities.sleep(3);
+
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 3);
+        wait.until(ExpectedConditions.visibilityOf(landingPage.allComment.get(0)));
+        List<String> listOfComment = new ArrayList<>();
+        for (WebElement comments : landingPage.allComment) {
+            listOfComment.add(comments.getText());
+        }
+        System.out.println("listOfComment = " + listOfComment);
+        Assert.assertTrue(isItemDisplayed(Driver.getDriver(), landingPage.allComment,comment));
+    }
+    }
+
+
+
+
+
+
+
+
+    //US10 Zaier
+    @When("user clicks {string} on the left bottom corner")
+    public void user_clicks_on_the_left_bottom_corner(String submodule) {
+        FilesModulePage filesModulePage = new FilesModulePage();
+        Map<String, WebElement> map = new HashMap<>() {{
+            put("Favorites", filesModulePage.favorite);
+            put("Deleted f", filesModulePage.deletedFiles);
+            put("Settings", filesModulePage.settingBtn);
+        }};
+
+        clickModule(submodule, map);
+    }
+
+    @Then("user should be able to click any buttons")
+    public void user_should_be_able_to_click_any_buttons() {
+        for (WebElement e : filesModulePage.settingOptions)
+            Assert.assertTrue(e.isEnabled());
+    }
+
+    double initialUsage;
+    @When("user checks the current storage usage")
+    public void user_checks_the_current_storage_usage() {
+        initialUsage = Double.parseDouble(filesModulePage.usedStorageParagraph.getText().split(" ")[0]);
+    }
+
+    @When("user uploads file with the {string} option")
+    public void user_uploads_file_with_the_option(String option) {
+
+        TrycloudUtililities.sleep(2);
+
+        try {
+            wait.fluentWaitForElement(getDescendent(filesModulePage.filesContentSection, filesModulePage.pageFooter));
+        } catch (TimeoutException e){
+            wait.fluentWaitForElement(filesModulePage.filesContentSection);
+        }
+
+        filesModulePage.addIcon.click();
+
+        clickItem(filesModulePage.addIconMenu, "span", option);
+
+        String path = "/Users/zaieraouani/Desktop/TestUpload001.png";
+
+        TrycloudUtililities.sleep(2);
+        Driver.getDriver().findElement(By.xpath("//input[@id='file_upload_start']")).sendKeys(path);
+
+        //input[@type='file']
+
+        TrycloudUtililities.sleep(2);
+        wait.waitForInvisibility(filesModulePage.uploadProgressBar, 10);
+        //TrycloudUtililities.sleep(2);
+    }
+
+    @When("user refreshes the page")
+    public void user_refreshes_the_page() {
+        Driver.getDriver().navigate().refresh();
+    }
+
+    @Then("user should be able to see storage usage is increased")
+    public void user_should_be_able_to_see_storage_usage_is_increased() {
+        double current = Double.parseDouble(filesModulePage.usedStorageParagraph.getText().split(" ")[0]);
+
+        Assert.assertTrue(current > initialUsage);
+
+        for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
+            if (filesModulePage.nameOfFile.get(i).getText().equalsIgnoreCase("TestUpload001")) {
+                filesModulePage.actionIcon.get(i).click();
+                Driver.getDriver().findElement(By.xpath("//span[.='Delete file']")).click();
+                break;
+            }
+        }
+       //US13 Nazar
     @Then("user verifies there are at least {int} contact names in the list")
     public void userVerifiesThereAreAtLeastContactNamesInTheList(int expectedSize) {
         int actualSize = Driver.getDriver().findElements(By.xpath("//div[@id='contacts-list']/div/div")).size();
@@ -242,3 +361,5 @@ public class Step_Definitions {
         Assert.assertTrue(actualSize>=expectedSize);
     }
 }
+
+

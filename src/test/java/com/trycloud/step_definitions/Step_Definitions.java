@@ -12,14 +12,15 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.IOException;
 import java.util.*;
+
+import static com.trycloud.utilities.TrycloudUtililities.*;
 
 public class Step_Definitions {
     LoginPage loginPage = new LoginPage();
@@ -92,7 +93,7 @@ public class Step_Definitions {
 
     @When("user clicks the {string} module")
     public void userClicksTheModule(String mainModuleName) {
-        TrycloudUtililities.clickItem(Driver.getDriver(), wait, landingPage.topMenuWithAllModules, mainModuleName);
+        clickItem(Driver.getDriver(), wait, landingPage.topMenuWithAllModules, mainModuleName);
     }
 
     @Then("verify title is {string}")
@@ -238,6 +239,73 @@ public class Step_Definitions {
 
         }
         Assert.assertTrue(filesNameInTrash.contains(fileToBeDeleted));
+    }
+
+
+
+
+    //US10 Zaier
+    @When("user clicks {string} on the left bottom corner")
+    public void user_clicks_on_the_left_bottom_corner(String submodule) {
+        FilesModulePage filesModulePage = new FilesModulePage();
+        Map<String, WebElement> map = new HashMap<>() {{
+            put("Favorites", filesModulePage.favorite);
+            put("Deleted f", filesModulePage.deletedFiles);
+            put("Settings", filesModulePage.settingBtn);
+        }};
+
+        clickModule(submodule, map);
+    }
+
+    @Then("user should be able to click any buttons")
+    public void user_should_be_able_to_click_any_buttons() {
+        for (WebElement e : filesModulePage.settingOptions)
+            Assert.assertTrue(e.isEnabled());
+    }
+
+    double initialUsage;
+    @When("user checks the current storage usage")
+    public void user_checks_the_current_storage_usage() {
+        initialUsage = Double.parseDouble(filesModulePage.usedStorageParagraph.getText().split(" ")[0]);
+    }
+
+    @When("user uploads file with the {string} option")
+    public void user_uploads_file_with_the_option(String option) {
+
+        TrycloudUtililities.sleep(2);
+
+        try {
+            wait.fluentWaitForElement(getDescendent(filesModulePage.filesContentSection, filesModulePage.pageFooter));
+        } catch (TimeoutException e){
+            wait.fluentWaitForElement(filesModulePage.filesContentSection);
+        }
+
+        filesModulePage.addIcon.click();
+
+        clickItem(filesModulePage.addIconMenu, "span", option);
+
+        String path = "/Users/zaieraouani/Desktop/TestUpload001.png";
+
+        TrycloudUtililities.sleep(2);
+        Driver.getDriver().findElement(By.xpath("//input[@id='file_upload_start']")).sendKeys(path);
+
+        //input[@type='file']
+
+        TrycloudUtililities.sleep(2);
+        wait.waitForInvisibility(filesModulePage.uploadProgressBar, 10);
+        //TrycloudUtililities.sleep(2);
+    }
+
+    @When("user refreshes the page")
+    public void user_refreshes_the_page() {
+        Driver.getDriver().navigate().refresh();
+    }
+
+    @Then("user should be able to see storage usage is increased")
+    public void user_should_be_able_to_see_storage_usage_is_increased() {
+        double current = Double.parseDouble(filesModulePage.usedStorageParagraph.getText().split(" ")[0]);
+
+        Assert.assertTrue(current > initialUsage);
     }
 }
 

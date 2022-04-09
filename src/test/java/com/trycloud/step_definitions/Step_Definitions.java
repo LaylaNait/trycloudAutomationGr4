@@ -274,7 +274,7 @@ public class Step_Definitions {
         System.out.println("listOfComment = " + listOfComment);
         Assert.assertTrue(isItemDisplayed(Driver.getDriver(), landingPage.allComment,comment));
     }
-    }
+
 
 
 
@@ -353,6 +353,7 @@ public class Step_Definitions {
                 break;
             }
         }
+    }
        //US13 Nazar
     @Then("user verifies there are at least {int} contact names in the list")
     public void userVerifiesThereAreAtLeastContactNamesInTheList(int expectedSize) {

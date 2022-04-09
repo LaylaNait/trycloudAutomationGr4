@@ -1,6 +1,5 @@
 Feature: As a user, I should be accessing all the main modules of the app.
-
-  @test3
+  @test1
   Scenario Outline: Verify users accessing all the main modules of the app.
     Given user on the login page
     When user use username "<username>" and passcode "<password>" and user click on the login button

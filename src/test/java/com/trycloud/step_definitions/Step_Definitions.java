@@ -342,6 +342,14 @@ public class Step_Definitions {
         double current = Double.parseDouble(filesModulePage.usedStorageParagraph.getText().split(" ")[0]);
 
         Assert.assertTrue(current > initialUsage);
+
+        for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
+            if (filesModulePage.nameOfFile.get(i).getText().equalsIgnoreCase("TestUpload001")) {
+                filesModulePage.actionIcon.get(i).click();
+                Driver.getDriver().findElement(By.xpath("//span[.='Delete file']")).click();
+                break;
+            }
+        }
     }
 }
 

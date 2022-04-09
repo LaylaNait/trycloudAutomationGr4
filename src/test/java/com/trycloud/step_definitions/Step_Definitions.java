@@ -89,11 +89,6 @@ public class Step_Definitions {
     }
 
     //US4_Badmaa
-    @Given("user on the dashboard page")
-    public void userOnTheDashboardPage() {
-        Driver.getDriver().get(ConfigurationReader.getProperty("env"));
-        loginPage.loginWithConfigurationProp();
-    }
 
     @When("user clicks the {string} module")
     public void userClicksTheModule(String mainModuleName) {
@@ -117,17 +112,17 @@ public class Step_Definitions {
             TrycloudUtililities.sleep(2);
             Assert.assertTrue(filesModulePage.firstTableColumn.get(i).isSelected());
         }
-
-      /*  for (WebElement checkBox : filesModulePage.firstTableColumn) {
+    }
+       /* for (WebElement checkBox : filesModulePage.firstTableColumn) {
             wait.waitForElement(checkBox, 4);
             JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
 
             js.executeScript("window.scrollBy(10000, 0);");
             js.executeScript("window.scrollBy(10000, 0);");
             Assert.assertTrue(checkBox.isSelected());
-        }*/
+        }
 
-    }
+    }*/
 
     //US5
 
@@ -150,10 +145,10 @@ public class Step_Definitions {
     }
 
     @When("the user clicks action-icon from any file on the page and user choose the Add to favorites option")
-    public void the_user_clicks_action_icon_from_any_file_on_the_page()  {
+    public void the_user_clicks_action_icon_from_any_file_on_the_page() {
         //loop through all action icons that are visible and displayed
         sizeOfListOfFiles = filesModulePage.threeDots.size();
-        for ( int i=0; i<filesModulePage.threeDots.size(); i++) {
+        for (int i = 0; i < filesModulePage.threeDots.size(); i++) {
             filesModulePage.threeDots.get(i).click();
             String addOrRemoveText = filesModulePage.removeOrAdd.getText();
             System.out.println("Add or Remove: " + addOrRemoveText);
@@ -184,12 +179,13 @@ public class Step_Definitions {
     public void the_user_clicks_the_files_module() {
         landingPage.dashboardModule.get(1).click();
     }
+
     @Then("Verify the chosen file is listed on the table")
     public void verify_the_chosen_file_is_listed_on_the_table() throws InterruptedException {
 
-        for ( int i= 0; i<filesModulePage.threeDots.size(); i++) {
+        for (int i = 0; i < filesModulePage.threeDots.size(); i++) {
             Thread.sleep(1000);
-            if ( filesModulePage.threeDotsUnderFavorite.get(i).isDisplayed()) {
+            if (filesModulePage.threeDotsUnderFavorite.get(i).isDisplayed()) {
                 WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
                 wait.until(ExpectedConditions.elementToBeClickable(filesModulePage.nameOfFile.get(i)));
                 String file = filesModulePage.nameOfFile.get(i).getText();
@@ -203,11 +199,12 @@ public class Step_Definitions {
 
         Assert.assertTrue(listOfFilesUnderFavoritesTab.containsAll(listOfFilesAddedToFavorites));
     }
+
     //US8
     @And("user clicks action-icon from any file on the page")
     public void userClicksActionIconFromAnyFileOnThePage() {
         for (int i = 0; i < filesModulePage.actionIcon.size(); i++) {
-           TrycloudUtililities.sleep(2);
+            TrycloudUtililities.sleep(2);
             fileToBeDeleted = filesModulePage.actualNamesOfFiles.get(0).getText();
             filesModulePage.actionIcon.get(0).click();
             break;
@@ -243,3 +240,4 @@ public class Step_Definitions {
         Assert.assertTrue(filesNameInTrash.contains(fileToBeDeleted));
     }
 }
+

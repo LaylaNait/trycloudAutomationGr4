@@ -20,6 +20,7 @@ And user checks the current storage usage
 And user uploads file with the "Upload file" option
 And user refreshes the page
 Then  user should be able to see storage usage is increased
+
   Examples:
     | username | password |
     | user4    | Userpass123 |

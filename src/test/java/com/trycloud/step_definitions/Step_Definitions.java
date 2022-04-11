@@ -100,7 +100,12 @@ public class Step_Definitions {
     @Then("verify title is {string}")
     public void verifyTitleIs(String expectedTitle) {
         String actualTitle = Driver.getDriver().getTitle();
+
         Assert.assertTrue(expectedTitle.contains(actualTitle));
+
+     
+
+
     }
 
     @And("user click the top-left checkbox of the table")
@@ -111,21 +116,11 @@ public class Step_Definitions {
     @Then("verify all the files are selected")
     public void verifyAllTheFilesAreSelected() {
         for (int i = 0; i < filesModulePage.firstTableColumn.size(); i++) {
-
             TrycloudUtililities.sleep(2);
-            Assert.assertTrue(filesModulePage.firstTableColumn.get(i).isSelected());
+            Assert.assertTrue(verifyAllSelected());
         }
     }
-       /* for (WebElement checkBox : filesModulePage.firstTableColumn) {
-            wait.waitForElement(checkBox, 4);
-            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
 
-            js.executeScript("window.scrollBy(10000, 0);");
-            js.executeScript("window.scrollBy(10000, 0);");
-            Assert.assertTrue(checkBox.isSelected());
-        }
-
-    }*/
 
     //US5
 

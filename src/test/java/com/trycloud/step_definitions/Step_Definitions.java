@@ -100,7 +100,11 @@ public class Step_Definitions {
     @Then("verify title is {string}")
     public void verifyTitleIs(String expectedTitle) {
         String actualTitle = Driver.getDriver().getTitle();
-        Assert.assertTrue("Title verification is failed", expectedTitle.contains(actualTitle));
+
+        Assert.assertTrue(expectedTitle.contains(actualTitle));
+
+     
+
 
     }
 
@@ -346,6 +350,33 @@ public class Step_Definitions {
             }
         }
     }
+    //US11 Anna
+
+    @When("user searches {string} from the search box")
+    public void user_search_user_from_the_search_box(String itemToSearch) {
+        talkModulePage.usersNamesChat.get(0).findElement(By.xpath("//ul//a[contains(@aria-label,'Conversation, " + itemToSearch + "')]")).click();
+    }
+    @When("user writes a message {string}")
+    public void user_write_a_message(String message) throws InterruptedException {
+         Thread.sleep(3000);
+        talkModulePage.messageBox.sendKeys(message);
+    }
+    @When("user clicks to submit button")
+    public void user_clicks_to_submit_button() throws InterruptedException {
+         Thread.sleep(3000);
+        talkModulePage.submitBtnForChat.click();
+    }
+    @Then("user should be able to see the {string} is displayed on the conversation log")
+    public void the_user_should_be_able_to_see_the_message_is_displayed_on_the_conversation_log(String message) {
+        List<String> messages = new ArrayList<>();
+        for(WebElement e : talkModulePage.messageOnConversationLog){
+            messages.add(e.getText());
+        }
+        Assert.assertTrue(messages.contains(message));
+
+    }
+
+
        //US13 Nazar
     @Then("user verifies there are at least {int} contact names in the list")
     public void userVerifiesThereAreAtLeastContactNamesInTheList(int expectedSize) {

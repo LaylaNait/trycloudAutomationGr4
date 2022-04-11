@@ -181,6 +181,21 @@ public class TrycloudUtililities {
         searchResultWithUser.click();
 
     }
+    public static boolean verifyAllSelected() {
+        WebElement checkboxToSelectAll = Driver.getDriver().findElement(By.xpath("//label[@for='select_all_files']"));
+        List<WebElement> rows = Driver.getDriver().findElements(By.xpath("//tbody[@id='fileList']//tr/td[1]"));
+        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+        WebElement fileSummary = Driver.getDriver().findElement(By.xpath("//td[@class='filesummary']"));
+        js.executeScript("arguments[0].scrollIntoView()", fileSummary);
+        boolean allSelected = false;
+        for (WebElement row : rows) {
+            if (row.isEnabled()) {
+                allSelected = true;
+            }
+
+        }
+        return checkboxToSelectAll.isEnabled() && allSelected == true;
+    }
 
 }
 

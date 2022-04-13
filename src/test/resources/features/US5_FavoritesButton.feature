@@ -1,4 +1,4 @@
-
+@smoke
 Feature: As a user, I should be able to access to Files module - Favorites button
 
   Scenario Outline: Verify users to add files to Favorites

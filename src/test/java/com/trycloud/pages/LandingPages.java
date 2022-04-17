@@ -34,6 +34,9 @@ public class LandingPages {
     @FindBy(xpath = "//input[@type='search']")
     public   WebElement homePageSearchBox;
 
+ @FindBy(xpath = "//span[@aria-label='Magnify icon']")
+ public WebElement magnifierIcon;
+
     @FindBy(xpath = "//li/a[@class='unified-search__result unified-search__result--focused']")
     public WebElement expectedResultOption;
     //US 12

@@ -10,10 +10,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -383,7 +380,30 @@ public class Step_Definitions {
         int actualSize = Driver.getDriver().findElements(By.xpath("//div[@id='contacts-list']/div/div")).size();
         System.out.println("actualSize = " + actualSize);
         Assert.assertTrue(actualSize>=expectedSize);
+
+
+
     }
+
+   //US14 madina
+   @When("user clicks the magnifier icon on the right top")
+   public void user_clicks_the_magnifier_icon_on_the_right_top() {
+     landingPage.homePageSearchBtn.click();
+   }
+    @When("user searches any existing {string} name")
+    public void user_searches_any_existing_name(String string) {
+        landingPage.homePageSearchBox.sendKeys("Calendar"+ Keys.ENTER);
+    }
+    @Then("verifies the app displays expected {string} option")
+    public void verifies_the_app_displays_expected_option(String string) {
+        landingPage.expectedResultOption.isDisplayed();
+    }
+
+
+
+
+
+
 }
 
 

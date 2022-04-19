@@ -1,9 +1,9 @@
 Feature: As a user, I should be able to remove files from favorites and upload a file directly
-
+@test7
   Scenario Outline: Verify users can add the folder
     Given user on the dashboard page with "<username>" and "<password>"
     When user clicks the "Files" module
-   And  user clicks the add icon on the top
+  When user clicks the add icon on the top
     And user clicks "new folder"
     And user write a folder name
     When user clicks submit icon
@@ -19,7 +19,6 @@ Feature: As a user, I should be able to remove files from favorites and upload a
     Given user on the dashboard page with "<username>" and "<password>"
     When user clicks the "Files" module
     And user chooses a folder from the page
-    And user clicks the add icon on the top
     When  user uploads a file with the upload file option
     Then verifies the file is displayed on the page
     Examples:

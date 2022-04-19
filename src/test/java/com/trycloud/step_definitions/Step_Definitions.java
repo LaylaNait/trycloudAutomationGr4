@@ -100,8 +100,6 @@ public class Step_Definitions {
 
         Assert.assertTrue(expectedTitle.contains(actualTitle));
 
-     
-
 
     }
 
@@ -195,6 +193,39 @@ public class Step_Definitions {
         Assert.assertTrue(listOfFilesUnderFavoritesTab.containsAll(listOfFilesAddedToFavorites));
     }
 
+    //US7-Eugene
+    @When("user clicks the add icon on the top")
+    public void userClicksTheAddIconOnTheTop() {
+
+        filesModulePage.addIcon.click();
+    }
+
+
+    @When("user clicks {string}")
+    public void user_clicks(String newFolder) {
+        wait.waitForElementToBeClickable(filesModulePage.newFolder, 10);
+        filesModulePage.newFolder.click();
+    }
+
+    @When("user write a folder name")
+    public void user_write_a_folder_name() {
+        filesModulePage.inputFolderName.sendKeys("EugeneFileAdded");
+    }
+
+    @When("user clicks submit icon")
+    public void user_clicks_submit_icon() {
+
+        wait.waitForElementToBeClickable(filesModulePage.submitIcon, 5);
+        filesModulePage.submitIcon.click();
+    }
+
+    @Then("verifies the folder is displayed on the page")
+    public void verifies_the_folder_is_displayed_on_the_page() {
+        wait.waitForElement(filesModulePage.newFolderLocation, 5);
+        Assert.assertTrue(filesModulePage.newFolderLocation.isDisplayed());
+    }
+
+
     //US8
     @And("user clicks action-icon from any file on the page")
     public void userClicksActionIconFromAnyFileOnThePage() {
@@ -236,14 +267,13 @@ public class Step_Definitions {
     }
 
 
-
-  
 //US9
 
     @And("user clicks the comments option")
     public void userClicksTheCommentsOption() {
         filesModulePage.commentsBtn.click();
     }
+
     @And("user writes a {string} inside the input box")
     public void userWritesAInsideTheInputBox(String comment) {
         filesModulePage.commentsInput.sendKeys(comment);
@@ -265,15 +295,8 @@ public class Step_Definitions {
             listOfComment.add(comments.getText());
         }
         System.out.println("listOfComment = " + listOfComment);
-        Assert.assertTrue(isItemDisplayed(Driver.getDriver(), landingPage.allComment,comment));
+        Assert.assertTrue(isItemDisplayed(Driver.getDriver(), landingPage.allComment, comment));
     }
-
-
-
-
-
-
-
 
 
     //US10 Zaier
@@ -296,6 +319,7 @@ public class Step_Definitions {
     }
 
     double initialUsage;
+
     @When("user checks the current storage usage")
     public void user_checks_the_current_storage_usage() {
         initialUsage = Double.parseDouble(filesModulePage.usedStorageParagraph.getText().split(" ")[0]);
@@ -308,7 +332,7 @@ public class Step_Definitions {
 
         try {
             wait.fluentWaitForElement(getDescendent(filesModulePage.filesContentSection, filesModulePage.pageFooter));
-        } catch (TimeoutException e){
+        } catch (TimeoutException e) {
             wait.fluentWaitForElement(filesModulePage.filesContentSection);
         }
 
@@ -353,20 +377,23 @@ public class Step_Definitions {
     public void user_search_user_from_the_search_box(String itemToSearch) {
         talkModulePage.usersNamesChat.get(0).findElement(By.xpath("//ul//a[contains(@aria-label,'Conversation, " + itemToSearch + "')]")).click();
     }
+
     @When("user writes a message {string}")
     public void user_write_a_message(String message) throws InterruptedException {
-         Thread.sleep(3000);
+        Thread.sleep(3000);
         talkModulePage.messageBox.sendKeys(message);
     }
+
     @When("user clicks to submit button")
     public void user_clicks_to_submit_button() throws InterruptedException {
-         Thread.sleep(3000);
+        Thread.sleep(3000);
         talkModulePage.submitBtnForChat.click();
     }
+
     @Then("user should be able to see the {string} is displayed on the conversation log")
     public void the_user_should_be_able_to_see_the_message_is_displayed_on_the_conversation_log(String message) {
         List<String> messages = new ArrayList<>();
-        for(WebElement e : talkModulePage.messageOnConversationLog){
+        for (WebElement e : talkModulePage.messageOnConversationLog) {
             messages.add(e.getText());
         }
         Assert.assertTrue(messages.contains(message));
@@ -374,35 +401,31 @@ public class Step_Definitions {
     }
 
 
-       //US13 Nazar
+    //US13 Nazar
     @Then("user verifies there are at least {int} contact names in the list")
     public void userVerifiesThereAreAtLeastContactNamesInTheList(int expectedSize) {
         int actualSize = Driver.getDriver().findElements(By.xpath("//div[@id='contacts-list']/div/div")).size();
         System.out.println("actualSize = " + actualSize);
-        Assert.assertTrue(actualSize>=expectedSize);
-
+        Assert.assertTrue(actualSize >= expectedSize);
 
 
     }
 
-   //US14 madina
-   @When("user clicks the magnifier icon on the right top")
-   public void user_clicks_the_magnifier_icon_on_the_right_top() {
-     landingPage.homePageSearchBtn.click();
-   }
+    //US14 madina
+    @When("user clicks the magnifier icon on the right top")
+    public void user_clicks_the_magnifier_icon_on_the_right_top() {
+        landingPage.homePageSearchBtn.click();
+    }
+
     @When("user searches any existing {string} name")
     public void user_searches_any_existing_name(String string) {
-        landingPage.homePageSearchBox.sendKeys("Calendar"+ Keys.ENTER);
+        landingPage.homePageSearchBox.sendKeys("Calendar" + Keys.ENTER);
     }
+
     @Then("verifies the app displays expected {string} option")
     public void verifies_the_app_displays_expected_option(String string) {
         landingPage.expectedResultOption.isDisplayed();
     }
-
-
-
-
-
 
 }
 

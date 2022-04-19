@@ -51,8 +51,9 @@ public class FilesModulePage {
     @FindBy(xpath = "//div[@class='newFileMenu popovermenu bubble menu open menu-left']")
     public WebElement addIconMenu;
 
-    @FindBy(xpath = "//span[.='New folder']")
+    @FindBy(xpath = "//a[@data-templatename='New folder']")
     public WebElement newFolder;
+
     @FindBy(xpath = "//input[contains(@value,'New folder')]")
     public WebElement inputFolderName;
     //6 /7 /8 /9
@@ -61,6 +62,8 @@ public class FilesModulePage {
     @FindBy(xpath = "//span[.='Upload file']")
    public WebElement uploadFiles;
 
+    @FindBy(xpath = "//tr[@data-file='EugeneFileAdded']")
+    public WebElement newFolderLocation;
 
     @FindBy(xpath = "//input[@class='icon-confirm']")
    public WebElement submitIcon;
